@@ -46,25 +46,39 @@ navSections.forEach(section => {
 });
 navbar.appendChild(fragment);
 
+//This is the helper function for a scroll (I set it a bit slow for visibility)
+const scrollToTop = () => {
+    const scrolling = document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrolling > 0) {
+        window.requestAnimationFrame(scrollToTop);
+        window.scrollTo(0, scrolling - scrolling / 50);
+    }
+};
+
 //Checks if section is in view 
 window.addEventListener("scroll", (section) => {
 
     for (let section of navSections) {
-        let sectionBounding = section.getBoundingClientRect();
+        const sectionBounding = section.getBoundingClientRect();
+        console.log(sectionBounding)
 
-        if ((sectionBounding.top >= 0 && sectionBounding.top <= 150) &&
+        if ((sectionBounding.top >= 0 && sectionBounding.top <= window.innerHeight * 0.75) &&
             sectionBounding.left >= 0 &&
             sectionBounding.right <= (minor || document.documentElement.clientWidth) &&
             sectionBounding.bottom <= (minor || document.documentElement.clientHeight)) {
-            for (let section of navSections) {
-                section.classList.add('your-active-class')
+
+            for (i = 1; i < navSections.length; i++) {
+                let sectionInFullView = document.getElementById("section" + i);
+
+                sectionInFullView.classList.add("your-active-class");
 
             }
-
-
         }
+
     }
 });
+
+
 
 
 
@@ -95,4 +109,4 @@ for (let i = 0; i < navSections.length; i++) {
 // observing a target element
 observer.observe(document.querySelector("#section1"));
 observer.observe(document.querySelector("#section2"));
-observer.observe(document.querySelector("#section3"));*/
+observer.observe(document.querySelector("#section3"));*/ // The checker//Checks if section is in view and adds active-class with moving background and color change

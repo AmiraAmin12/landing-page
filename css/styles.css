@@ -61,6 +61,7 @@ body {
     margin: 0;
     font-family: 'Merriweather', serif;
     color: #fff;
+    scroll-behavior: smooth;
 }
 
 
