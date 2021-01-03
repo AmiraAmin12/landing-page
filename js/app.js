@@ -22,6 +22,7 @@ const navbar = document.querySelector('.navbar__menu')
 const navbarList = document.getElementById('#navbar__list');
 const navSections = document.querySelectorAll('section');
 const fragment = document.createDocumentFragment();
+
 const minor = window.innerHeight;
 
 
@@ -46,44 +47,71 @@ navSections.forEach(section => {
 });
 navbar.appendChild(fragment);
 
-//This is the helper function for a scroll (I set it a bit slow for visibility)
-const scrollToTop = () => {
-    const scrolling = document.documentElement.scrollTop || document.body.scrollTop;
-    if (scrolling > 0) {
-        window.requestAnimationFrame(scrollToTop);
-        window.scrollTo(0, scrolling - scrolling / 50);
-    }
-};
 
-//Checks if section is in view 
+
+//Checks if section is in view  then highlight it 
 window.addEventListener("scroll", (section) => {
-
-    for (let section of navSections) {
-        const sectionBounding = section.getBoundingClientRect();
-        console.log(sectionBounding)
-
-        if ((sectionBounding.top >= 0 && sectionBounding.top <= window.innerHeight * 0.75) &&
-            sectionBounding.left >= 0 &&
-            sectionBounding.right <= (minor || document.documentElement.clientWidth) &&
-            sectionBounding.bottom <= (minor || document.documentElement.clientHeight)) {
-
-            for (i = 1; i < navSections.length; i++) {
-                let sectionInFullView = document.getElementById("section" + i);
-
-                sectionInFullView.classList.add("your-active-class");
-
-            }
+    //capture the current section 
+    let scrollPosition = document.documentElement.scrollTop;
+    //itereate over all sections
+    navSections.forEach((section) => {
+        if (
+            scrollPosition >= section.offsetTop - section.offsetHeight * 0.25 &&
+            scrollPosition <
+            section.offsetTop + section.offsetHeight - section.offsetHeight * 0.25
+        ) {
+            const currentId = section.dataset.nav;
+            console.log(currentId)
+            section.classList.add("your-active-class");
         }
+    });
 
-    }
+
 });
 
 
+var removeAllActiveClasses = function() {
+    document.querySelectorAll(".menu__link").forEach((el) => {
+        el.classList.remove("active");
+    });
+};
+
+var addActiveClass = function() {
+    document.querySelectorAll(".menu__link").forEach((el) => {
+        el.classList.add("active");
+    });
+}
 
 
 
-//add fixed nav
 
+//smooth scroll'
+
+let navLinks = document.querySelectorAll(".menu__link ");
+navLinks.forEach((link) => {
+    link.addEventListener("click", (e) => {
+        e.preventDefault();
+        let currentId = e.target.attributes.href.value;
+
+        let section = document.querySelector(currentId);
+        let sectionPos = section.offsetTop;
+
+
+        section.scrollIntoView({
+            behavior: "smooth"
+
+        });
+
+
+        window.scroll({
+            top: sectionPos,
+            behavior: "smooth",
+        });
+    });
+});
+
+
+//add fixed nav when scroll
 window.addEventListener("scroll", function() {
     const scrollHeight = window.pageYOffset;
     const navHeight = navbar.getBoundingClientRect().height;
@@ -93,20 +121,3 @@ window.addEventListener("scroll", function() {
         navbar.classList.remove("fixed-nav");
     }
 });
-//// new object with screen as root element
-/*const observer = new IntersectionObserver(function(navSections) {
-for (let i = 0; i < navSections.length; i++) {
-    if (navSections[i]['isIntersecting'] === true) {
-        if (navSections[i]['intersectionRatio'] === 1)
-            navSections[i].classList.add("your-active-class");
-    }
-
-
-}
-// callback code
-}, { root: null });
-
-// observing a target element
-observer.observe(document.querySelector("#section1"));
-observer.observe(document.querySelector("#section2"));
-observer.observe(document.querySelector("#section3"));*/ // The checker//Checks if section is in view and adds active-class with moving background and color change
